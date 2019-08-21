@@ -1,0 +1,63 @@
+stages:
+
+  - deploy
+
+  - build
+
+  - ops
+
+ 
+
+deploy_job:
+
+  stage: deploy
+
+  tags:
+
+    - auto-runner
+
+  only:
+
+    - master
+
+  script:
+
+    - bash deploy java springboot-demo master
+
+build_job:
+
+  stage: build
+
+  tags:
+
+    - auto-runner
+
+  only:
+
+    - master
+
+  script:
+
+    - source /etc/profile
+
+    - cd /data/wwwroot/java/springboot-demo/master
+
+    - /data/wwwroot/maven/bin/mvn clean package -Dmaven.test.skip=true
+
+ops_job:
+
+  stage: ops
+
+  tags:
+
+    - auto-runner
+
+  only:
+
+    - master
+
+  script:
+
+    - rm -f /data/wwwroot/tomcat/webapps/springboot-demo.war
+
+    - cp /data/wwwroot/java/springboot-demo/master/target/springboot-demo.war /data/wwwroot/tomcat/webapps/springboot-demo.war
