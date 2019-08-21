@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * @author weianlai
@@ -20,13 +21,13 @@ public interface UserService {
      * 根据id获取用户
      * @return
      */
-    public User getUser();
+    Map getUser(Integer id);
 
     /**
      * 测试redis
      * @return
      */
-    public String testRedis();
+    String testRedis();
 
     /**
      * 测试json统一返回数据

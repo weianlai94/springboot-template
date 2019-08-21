@@ -12,7 +12,10 @@
   </resultMap>
 
     <select id="getUserInfo" resultType="com.example.demo.common.dto.UserDTO" parameterType="int">
-        select u.id, username, age,country_name from `user` u inner join `country` c on u.id=c.id where u.id=#{id}
+        select u.id, username, age,country_name from `user` u inner join `country` c on u.id=c.uid where u.id=#{id}
+    </select>
+    <select id="getUser" resultType="java.util.Map" parameterType="int">
+      select u.id, username, age,country_name from `user` u inner join `country` c on u.id=c.uid where u.id=#{id}
     </select>
 
 </mapper>

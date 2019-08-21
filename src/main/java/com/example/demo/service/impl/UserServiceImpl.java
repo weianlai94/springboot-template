@@ -45,9 +45,10 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public User getUser() {
+    public Map getUser(Integer id) {
         System.out.println(userMapper);
-        return userMapper.selectByPrimaryKey(1);
+//        return userMapper.selectByPrimaryKey(id);
+        return userMapper.getUser(id);
     }
 
     @Override

@@ -55,9 +55,9 @@ public class DemoController {
 
     @ApiOperation(value = "test mybatis", notes = "")
     @RequestMapping(value = "getuser", method = RequestMethod.GET)
-    public User getUser() {
-        int i = 1 / 0;
-        return userService.getUser();
+    public Map getUser(Integer id) {
+//        int i = 1 / 0;
+        return userService.getUser(id);
     }
 
     @ApiOperation(value = "test mybatis", notes = "")
