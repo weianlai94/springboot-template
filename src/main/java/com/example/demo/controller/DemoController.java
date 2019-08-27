@@ -19,12 +19,15 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -221,7 +224,7 @@ public class DemoController {
 
     @ApiOperation(value = "测试发送邮件", notes = "测试发送邮件")
     @RequestMapping(value = "testSendMsg", method = RequestMethod.POST)
-    public ResponseEntity<JsonResultEntity> testSendMsg(@RequestBody AlipayVO alipayVO, HttpServletRequest request) {
+    public ResponseEntity<JsonResultEntity> testSendMsg() {
         ResponseEntity<JsonResultEntity> result = null;
         try {
             // 构造Email消息
@@ -233,6 +236,28 @@ public class DemoController {
                     "由于C++所具有的优势，该项目组的研究人员首先考虑采用C++来编写程序。但对于硬件资源极其匮乏的单片式系统来说，C++程序过于复杂和庞大。另外由于消费电子产品所采用的嵌入式处理器芯片的种类繁杂，如何让编写的程序跨平台运行也是个难题。为了解决困难，他们首先着眼于语言的开发，假设了一种结构简单、符合嵌入式应用需要的硬件平台体系结构并为其制定了相应的规范，其中就定义了这种硬件平台的二进制机器码指令系统（即后来成为“字节码”的指令系统），以待语言开发成功后，能有半导体芯片生产商开发和生产这种硬件平台。对于新语言的设计，Sun公司研发人员并没有开发一种全新的语言，而是根据嵌入式软件的要求，对C++进行了改造，去除了留在C++的一些不太实用及影响安全的成分，并结合嵌入式系统的实时性要求，开发了一种称为Oak的面向对象语言。\n" +
                     "由于在开发Oak语言时，尚且不存在运行字节码的硬件平台，所以为了在开发时可以对这种语言进行实验研究，他们就在已有的硬件和软件平台基础上，按照自己所指定的规范，用软件建设了一个运行平台，整个系统除了比C++更加简单之外，没有什么大的区别。1992年的夏天，当Oak语言开发成功后，研究者们向硬件生产商进行演示了Green操作系统、Oak的程序设计语言、类库和其硬件，以说服他们使用Oak语言生产硬件芯片，但是，硬件生产商并未对此产生极大的热情。因为他们认为，在所有人对Oak语言还一无所知的情况下，就生产硬件产品的风险实在太大了，所以Oak语言也就因为缺乏硬件的支持而无法进入市场，从而被搁置了下来。");
             javaMailSender.send(message);
+            result = ResponseEntity.ok(JsonResultUtils.success());
+        } catch (Exception e) {
+            log.error("发送邮件失败", e);
+        }
+        return result;
+    }
+
+    @ApiOperation(value = "测试发送富文本邮件", notes = "测试发送富文本邮件")
+    @RequestMapping(value = "testSendFWBMsg", method = RequestMethod.POST)
+    public ResponseEntity<JsonResultEntity> testSendFWBMsg() {
+        ResponseEntity<JsonResultEntity> result = null;
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom("961935154@qq.com");
+            mimeMessageHelper.setTo("3445083416@qq.com");
+            mimeMessageHelper.setSubject("这是一个富文本邮件测试");
+            String html = "<html><body><h4>Hello,SpringBoot</h4><img src='cid:boot' /></body></html>";
+            mimeMessageHelper.setText(html, true);
+            // 设置内嵌元素 cid，第一个参数表示内联图片的标识符，第二个参数标识资源引用
+            mimeMessageHelper.addInline("boot", new ClassPathResource("test111.jpg"));
+            javaMailSender.send(mimeMessage);
             result = ResponseEntity.ok(JsonResultUtils.success());
         } catch (Exception e) {
             log.error("发送邮件失败", e);
