@@ -1,5 +1,6 @@
 package com.example.demo.config;
 
+
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
@@ -15,8 +16,7 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new LogInterceptor());
-        registry.addInterceptor(new LogInterceptor2());
+        registry.addInterceptor(new LoggerInterceptor());
     }
 
     @Override

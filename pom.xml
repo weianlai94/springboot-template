@@ -52,12 +52,12 @@
 		</dependency>
 		<!-- druid -->
 		<dependency>
-		<groupId>com.alibaba</groupId>
+			<groupId>com.alibaba</groupId>
 			<artifactId>druid-spring-boot-starter</artifactId>
 			<version>1.1.10</version>
 		</dependency>
 		<dependency>
-		<groupId>com.alibaba</groupId>
+			<groupId>com.alibaba</groupId>
 			<artifactId>druid</artifactId>
 			<version>1.1.10</version>
 		</dependency>
@@ -92,18 +92,18 @@
 			<artifactId>swagger-models</artifactId>
 			<version>1.5.21</version>
 		</dependency>
-<!--		<dependency>-->
-<!--			<groupId>io.springfox</groupId>-->
-<!--			<artifactId>springfox-swagger2</artifactId>-->
-<!--&lt;!&ndash;			<version>2.7.0</version>&ndash;&gt;-->
-<!--			<version>2.9.2</version>-->
-<!--		</dependency>-->
-<!--		<dependency>-->
-<!--			<groupId>io.springfox</groupId>-->
-<!--			<artifactId>springfox-swagger-ui</artifactId>-->
-<!--&lt;!&ndash;			<version>2.7.0</version>&ndash;&gt;-->
-<!--			<version>2.9.2</version>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>io.springfox</groupId>-->
+		<!--			<artifactId>springfox-swagger2</artifactId>-->
+		<!--&lt;!&ndash;			<version>2.7.0</version>&ndash;&gt;-->
+		<!--			<version>2.9.2</version>-->
+		<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>io.springfox</groupId>-->
+		<!--			<artifactId>springfox-swagger-ui</artifactId>-->
+		<!--&lt;!&ndash;			<version>2.7.0</version>&ndash;&gt;-->
+		<!--			<version>2.9.2</version>-->
+		<!--		</dependency>-->
 		<!-- redis -->
 		<dependency>
 			<groupId>redis.clients</groupId>
@@ -115,11 +115,11 @@
 			<artifactId>spring-boot-starter-data-redis</artifactId>
 		</dependency>
 		<!-- pagehelper -->
-<!--		<dependency>-->
-<!--			<groupId>com.github.pagehelper</groupId>-->
-<!--			<artifactId>pagehelper</artifactId>-->
-<!--			<version>4.1.4</version>-->
-<!--		</dependency>-->
+		<!--		<dependency>-->
+		<!--			<groupId>com.github.pagehelper</groupId>-->
+		<!--			<artifactId>pagehelper</artifactId>-->
+		<!--			<version>4.1.4</version>-->
+		<!--		</dependency>-->
 		<dependency>
 			<groupId>com.github.pagehelper</groupId>
 			<artifactId>pagehelper-spring-boot-starter</artifactId>
@@ -235,7 +235,12 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-mail</artifactId>
 		</dependency>
-    </dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>javax.servlet-api</artifactId>
+			<version>4.0.1</version>
+		</dependency>
+	</dependencies>
 
 	<!--	<distributionManagement>-->
 	<!--		<snapshotRepository>-->

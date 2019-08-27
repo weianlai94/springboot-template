@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.example.demo.common.alipay.AlipayVO;
 import com.example.demo.common.dto.UserDTO;
@@ -19,12 +20,15 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.Map;
@@ -221,7 +225,7 @@ public class DemoController {
 
     @ApiOperation(value = "测试发送邮件", notes = "测试发送邮件")
     @RequestMapping(value = "testSendMsg", method = RequestMethod.POST)
-    public ResponseEntity<JsonResultEntity> testSendMsg(@RequestBody AlipayVO alipayVO, HttpServletRequest request) {
+    public ResponseEntity<JsonResultEntity> testSendMsg() {
         ResponseEntity<JsonResultEntity> result = null;
         try {
             // 构造Email消息
@@ -238,6 +242,45 @@ public class DemoController {
             log.error("发送邮件失败", e);
         }
         return result;
+    }
+
+    @ApiOperation(value = "测试发送富文本邮件", notes = "测试发送富文本邮件")
+    @RequestMapping(value = "testSendFWBMsg", method = RequestMethod.POST)
+    public ResponseEntity<JsonResultEntity> testSendFWBMsg() {
+        ResponseEntity<JsonResultEntity> result = null;
+        try {
+            MimeMessage mimeMessage = javaMailSender.createMimeMessage();
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            mimeMessageHelper.setFrom("961935154@qq.com");
+            mimeMessageHelper.setTo("3445083416@qq.com");
+            mimeMessageHelper.setSubject("这是一个富文本邮件测试");
+            String html = "<html><body><h4>Hello,SpringBoot</h4><img src='cid:boot' /></body></html>";
+            mimeMessageHelper.setText(html, true);
+            // 设置内嵌元素 cid，第一个参数表示内联图片的标识符，第二个参数标识资源引用
+            mimeMessageHelper.addInline("boot", new ClassPathResource("test111.jpg"));
+            javaMailSender.send(mimeMessage);
+            result = ResponseEntity.ok(JsonResultUtils.success());
+        } catch (Exception e) {
+            log.error("发送邮件失败", e);
+        }
+        return result;
+    }
+
+    /**
+     * 简单测试请求日志的记录
+     * @param request 请求对象
+     * @param name 用户名
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public JSONObject login(HttpServletRequest request,String name) throws Exception
+    {
+        JSONObject obj = new JSONObject();
+        obj.put("msg","用户："+name+"，登录成功。");
+        //将返回值写入到请求对象中
+        request.setAttribute(LoggerUtils.LOGGER_RETURN,obj);
+        return obj;
     }
 
 }
