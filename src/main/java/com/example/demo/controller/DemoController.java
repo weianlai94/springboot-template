@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.aliyuncs.dysmsapi.model.v20170525.SendSmsResponse;
 import com.example.demo.common.alipay.AlipayVO;
 import com.example.demo.common.dto.UserDTO;
@@ -348,6 +349,23 @@ public class DemoController {
             return "上传失败";
         }
         return "上传成功";
+    }
+
+    /**
+     * 简单测试请求日志的记录
+     * @param request 请求对象
+     * @param name 用户名
+     * @return
+     * @throws Exception
+     */
+    @RequestMapping(value = "/login",method = RequestMethod.GET)
+    public JSONObject login(HttpServletRequest request,String name) throws Exception
+    {
+        JSONObject obj = new JSONObject();
+        obj.put("msg","用户："+name+"，登录成功。");
+        //将返回值写入到请求对象中
+        request.setAttribute(LoggerUtils.LOGGER_RETURN,obj);
+        return obj;
     }
 
 }
