@@ -19,3 +19,8 @@
 * fdfs文件上传demo
 * 添加druid数据库连接池
 * 添加拦截器
+* 添加FastJson消息转化器
+* 添加邮件发送
+* 配置SpringBoot支持自动装载Servlet
+* 配置拦截器记录日志
+* 配置SpringBoot文件上传
