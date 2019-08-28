@@ -26,11 +26,14 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.internet.MimeMessage;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * @author weianlai
@@ -230,7 +233,7 @@ public class DemoController {
             // 构造Email消息
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom("961935154@qq.com");
-            message.setTo("3445083416@qq.com");
+            message.setTo("2943087757@qq.com");
             message.setSubject("这是一个简单的文本邮件测试");
             message.setText("20世纪90年代，硬件领域出现了单片式计算机系统，这种价格低廉的系统一出现就立即引起了自动控制领域人员的注意，因为使用它可以大幅度提升消费类电子产品（如电视机顶盒、面包烤箱、移动电话等）的智能化程度。Sun公司为了抢占市场先机，在1991年成立了一个称为Green的项目小组，帕特里克、詹姆斯·高斯林、麦克·舍林丹和其他几个工程师一起组成的工作小组在加利福尼亚州门洛帕克市沙丘路的一个小工作室里面研究开发新技术，专攻计算机在家电产品上的嵌入式应用。\n" +
                     "由于C++所具有的优势，该项目组的研究人员首先考虑采用C++来编写程序。但对于硬件资源极其匮乏的单片式系统来说，C++程序过于复杂和庞大。另外由于消费电子产品所采用的嵌入式处理器芯片的种类繁杂，如何让编写的程序跨平台运行也是个难题。为了解决困难，他们首先着眼于语言的开发，假设了一种结构简单、符合嵌入式应用需要的硬件平台体系结构并为其制定了相应的规范，其中就定义了这种硬件平台的二进制机器码指令系统（即后来成为“字节码”的指令系统），以待语言开发成功后，能有半导体芯片生产商开发和生产这种硬件平台。对于新语言的设计，Sun公司研发人员并没有开发一种全新的语言，而是根据嵌入式软件的要求，对C++进行了改造，去除了留在C++的一些不太实用及影响安全的成分，并结合嵌入式系统的实时性要求，开发了一种称为Oak的面向对象语言。\n" +
@@ -249,11 +252,11 @@ public class DemoController {
         ResponseEntity<JsonResultEntity> result = null;
         try {
             MimeMessage mimeMessage = javaMailSender.createMimeMessage();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true, "utf-8");
             mimeMessageHelper.setFrom("961935154@qq.com");
-            mimeMessageHelper.setTo("3445083416@qq.com");
+            mimeMessageHelper.setTo("2943087757@qq.com");
             mimeMessageHelper.setSubject("这是一个富文本邮件测试");
-            String html = "<html><body><h4>Hello,SpringBoot</h4><img src='cid:boot' /></body></html>";
+            String html = "<html><body><h4>程序员的工作现状...</h4><img src='cid:boot' /></body></html>";
             mimeMessageHelper.setText(html, true);
             // 设置内嵌元素 cid，第一个参数表示内联图片的标识符，第二个参数标识资源引用
             mimeMessageHelper.addInline("boot", new ClassPathResource("test111.jpg"));
@@ -263,6 +266,88 @@ public class DemoController {
             log.error("发送邮件失败", e);
         }
         return result;
+    }
+
+    /**
+     * 提取上传方法为公共方法
+     * @param uploadDir 上传文件目录
+     * @param file 上传对象
+     * @throws Exception
+     */
+    private String executeUpload(String uploadDir,MultipartFile file) throws Exception
+    {
+        //文件后缀名
+        String suffix = file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf("."));
+        //上传文件名
+        String filename = UUID.randomUUID() + suffix;
+        //服务器端保存的文件对象
+        File serverFile = new File(uploadDir + filename);
+        //将上传的文件写入到服务器端文件内
+        file.transferTo(serverFile);
+        return filename;
+    }
+
+
+    @ApiOperation(value = "测试文件上传", notes = "测试文件上传")
+    @RequestMapping(value = "/upload",method = RequestMethod.POST)
+    public @ResponseBody String upload(HttpServletRequest request, MultipartFile file)
+    {
+        String filename = "";
+        String uploadDir = "";
+        try {
+            //上传目录地址
+            uploadDir = request.getSession().getServletContext().getRealPath("/") +"upload/";
+            //如果目录不存在，自动创建文件夹
+            File dir = new File(uploadDir);
+            if(!dir.exists())
+            {
+                dir.mkdir();
+            }
+            //调用上传方法
+            filename = executeUpload(uploadDir,file);
+        }catch (Exception e)
+        {
+            //打印错误堆栈信息
+            e.printStackTrace();
+            return "上传失败";
+        }
+
+        return uploadDir + filename;
+    }
+
+    /**
+     * 上传多个文件
+     * @param request 请求对象
+     * @param file 上传文件集合
+     * @return
+     */
+    @RequestMapping(value = "/uploads",method = RequestMethod.POST)
+    public @ResponseBody String uploads(HttpServletRequest request,MultipartFile[] file)
+    {
+
+        try {
+            //上传目录地址
+            String uploadDir = request.getSession().getServletContext().getRealPath("/") +"upload/";
+            //如果目录不存在，自动创建文件夹
+            File dir = new File(uploadDir);
+            if(!dir.exists())
+            {
+                dir.mkdir();
+            }
+            //遍历文件数组执行上传
+            for (int i =0;i<file.length;i++) {
+                if(file[i] != null) {
+                    //调用上传方法
+                    executeUpload(uploadDir, file[i]);
+                }
+            }
+        }catch (Exception e)
+        {
+            //打印错误堆栈信息
+            e.printStackTrace();
+            return "上传失败";
+        }
+        return "上传成功";
     }
 
 }
